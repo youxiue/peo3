@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.UserDao">
+
+    <resultMap id="userMap" type="userInfo">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="phoneNum" column="phoneNum"/>
+        <result property="status" column="status"/>
+        <collection property="roles" ofType="role" column="id"
+                    select="com.itheima.dao.RoleDao.findByUserId"/>
+    </resultMap>
+
+    <select id="findByUsername" parameterType="String" resultMap="userMap">
+        SELECT * FROM users WHERE  username = #{username}
+    </select>
+
+    <select id="findAll" resultMap="userMap">
+        SELECT * from users
+    </select>
+
+    <insert id="save" parameterType="userInfo">
+        INSERT INTO users (username,password,email,phoneNum,status) VALUES (#{username},#{password},#{email},#{phoneNum},#{status})
+    </insert>
+    <!--用户详情-->
+    <select id="findById" parameterType="String" resultMap="userMap">
+        SELECT * FROM users WHERE  id = #{id}
+    </select>
+
+    <!--用户删除-->
+    <delete id="delete" parameterType="String" >
+        DELETE FROM USERS WHERE id = #{id}
+    </delete>
+    <delete id="deleteUser_role" parameterType="String">
+        DELETE FROM users_role WHERE userid = #{userid}
+    </delete>
+
+    <insert id="addRoleToUser" parameterType="roleToUser">
+        insert INTO USERS_ROLE VALUES (#{userid},#{roleid})
+    </insert>
+
+    <!--密码没有改变时的修改-->
+    <update id="updateNoPassword" parameterType="userInfo">
+        update users SET email=#{email},phoneNum=#{phoneNum},status=#{status} WHERE id = #{id}
+    </update>
+    <!--密码发生改变的修改-->
+    <update id="updateHavePassword" parameterType="userInfo">
+        update users SET PASSWORD=#{password},email=#{email},phoneNum=#{phoneNum},status=#{status} WHERE id = #{id}
+    </update>
+</mapper>

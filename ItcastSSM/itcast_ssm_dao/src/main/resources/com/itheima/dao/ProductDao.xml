@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.ProductDao">
+    <select id="findAll" resultType="Product">
+        SELECT * FROM product
+    </select>
+    <insert id="save" parameterType="product">
+        INSERT INTO product (productNum,productName,departureTime,cityName,productPrice,productStatus,productDesc)
+         values (#{productNum},#{productName},#{departureTime},#{cityName},#{productPrice},#{productStatus},#{productDesc})
+    </insert>
+    <delete id="delete" parameterType="String">
+        DELETE FROM PRODUCT WHERE id = #{id}
+    </delete>
+    <select id="findOne" parameterType="String" resultType="product">
+        SELECT * FROM PRODUCT WHERE id = #{id}
+    </select>
+    <update id="update" parameterType="product">
+        UPDATE  product set productNum=#{productNum},productName=#{productName},departureTime=#{departureTime},
+        cityName=#{cityName},productPrice=#{productPrice},productStatus=#{productStatus},productDesc=#{productDesc}
+        WHERE id = #{id}
+    </update>
+    <select id="search" parameterType="String" resultType="product">
+        SELECT * FROM PRODUCT
+        <where>
+            <if test="value!=null ">
+                AND productName LIKE #{productName}
+            </if>
+        </where>
+    </select>
+</mapper>

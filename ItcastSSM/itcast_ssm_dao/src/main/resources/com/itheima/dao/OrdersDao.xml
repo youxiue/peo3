@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.OrdersDao">
+
+   <!-- <resultMap id="ordersMap" type="orders">
+        <id property="id" column="id"></id>
+        <result property="orderNum" column="orderNum"></result>
+        <result property="orderTime" column="orderTime"></result>
+        <result property="peopleCount" column="peopleCount"></result>
+        <result property="orderDesc" column="orderDesc"></result>
+        <result property="payType" column="payType"></result>
+        <result property="orderStatus" column="orderStatus"></result>
+        <result property="productId" column="productId"></result>
+        <result property="memberId" column="memberId"></result>
+        <association property="product" javaType="product" column="productId"
+                     select="com.itheima.dao.ProductDao.findOne"></association>
+    </resultMap>-->
+    <resultMap id="ordersMap2" type="orders">
+        <id property="id" column="id"></id>
+        <result property="orderNum" column="orderNum"></result>
+        <result property="orderTime" column="orderTime"></result>
+        <result property="peopleCount" column="peopleCount"></result>
+        <result property="orderDesc" column="orderDesc"></result>
+        <result property="payType" column="payType"></result>
+        <result property="orderStatus" column="orderStatus"></result>
+        <result property="productId" column="productId"></result>
+        <result property="memberId" column="memberId"></result>
+        <association property="product" javaType="product" column="productId"
+                     select="com.itheima.dao.ProductDao.findOne"></association>
+        <association property="member" javaType="member" column="memberId"
+                     select="com.itheima.dao.MemberDao.findById"></association>
+        <collection property="travellers" ofType="traveller" column="id"
+                    select="com.itheima.dao.TravellerDao.findByOrdersId"></collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="ordersMap2">
+        SELECT * FROM orders
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="ordersMap2">
+        select * from orders WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="orders">
+        UPDATE orders SET payType= #{payType},orderStatus=#{orderStatus} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM orders WHERE id = #{id}
+    </delete>
+</mapper>

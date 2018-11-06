@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.RoleDao">
+    <resultMap id="roleMap" type="role">
+        <id property="id" column="id"></id>
+        <result property="roleName" column="roleName"></result>
+        <result property="roleDesc" column="roleDesc"></result>
+        <collection property="permissions" ofType="permission" column="id"
+                    select="com.itheima.dao.PermissionDao.findByRoleId"></collection>
+    </resultMap>
+    <!--用户详情-->
+    <select id="findByUserId" resultMap="roleMap">
+        SELECT * FROM role where id in (SELECT roleid from users_role WHERE userid = #{userid})
+    </select>
+    <select id="findAll" resultType="role">
+        SELECT  * FROM role
+    </select>
+
+    <insert id="save" parameterType="role">
+        INSERT INTO ROLE ( ROLENAME, ROLEDESC) VALUES (#{roleName},#{roleDesc})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="roleMap">
+        SELECT * FROM role where id = #{id}
+    </select>
+
+    <insert id="addPermissionToRole" parameterType="PermissionToRole">
+        INSERT INTO role_permission values (#{permissionid},#{roleid})
+    </insert>
+
+    <!--删除角色-->
+    <delete id="deleteUsers_Role" parameterType="String">
+        DELETE FROM USERS_ROLE WHERE ROLEID = #{id}
+    </delete>
+    <delete id="deleteRole_Permission" parameterType="String">
+        DELETE FROM ROLE_PERMISSION WHERE ROLEID = #{id}
+    </delete>
+    <delete id="delete" parameterType="String">
+        DELETE FROM ROLE WHERE ID = #{id}
+    </delete>
+
+    <!--查询该用户所没有的角色  用于给用户添加角色-->
+    <select id="findNotUserId" parameterType="String" resultType="role">
+        SELECT  * FROM role where ID NOT IN (select ROLEID FROM USERS_ROLE where USERID = #{id})
+    </select>
+</mapper>
